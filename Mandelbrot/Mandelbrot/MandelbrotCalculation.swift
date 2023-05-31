@@ -7,28 +7,24 @@
 
 import Foundation
 
-struct Vector80 {
-    let dx: Float80
-    let dy: Float80
-    
-    static func +(lhs: Vector80, rhs: Vector80) -> Vector80 {
-        return Vector80(dx: lhs.dx + rhs.dx, dy: lhs.dy + rhs.dy)
-    }
-}
-
 class Mandelbrot {
-    class func calculate(x: Float80, y: Float80, i: Int) -> Int {
-        var z = Vector80(dx: 0, dy: 0)
-        let oZ = Vector80(dx: x, dy: y)
-        
-        for passno in 0..<i {
-            z = Vector80(dx: z.dx * z.dx - z.dy * z.dy, dy: 2 * z.dx * z.dy) + oZ
-            
-            if (z.dx * z.dx + z.dy * z.dy) >= 4 {
-                return passno
-            }
-        }
-        
-        return i - 1
+  static func calculatePixelColor(pixelX: Float80, pixelY: Float80, maxIteration: Int) -> Int {
+    let x0: Float80 = pixelX
+    let y0: Float80 = pixelY
+      
+    var x: Float80 = 0
+    var y: Float80 = 0
+      
+    var iteration = 0
+      
+    while (x*x + y*y <= 2*2 && iteration < maxIteration) {
+      let xTemp = x*x - y*y + x0
+      y = 2*x*y + y0
+      x = xTemp
+      
+      iteration += 1
     }
+    
+    return iteration
+  }
 }

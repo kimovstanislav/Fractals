@@ -11,11 +11,7 @@ import UIKit
 class MandelbrotDrawing {
   let rect: CGRect = CGRect(x: 0, y: 0, width: 300, height: 300)
   var randomColorList: [Int: UIColor] = [:]
-  let maxIterations = 100
-  var Ox: Float80 = -2
-  var Oy: Float80 = -2
-  var Lx: Float80 = 4
-  var Ly: Float80 = 4
+  let maxIterations = 500
   
   init() {
     for i in 0...maxIterations {
@@ -57,8 +53,6 @@ class MandelbrotDrawing {
   
   func drawMandelbrotImage(width: Int, height: Int) -> UIImage? {
     guard let cgImage = drawEmptyImage(width: width, height: height) else { return nil }
-    self.Ox = -(Lx / 2) * Float80(width) / Float80(height)
-    self.Lx = Ly * Float80(width) / Float80(height)
     
     // Redraw image for correct pixel format
     var colorSpace = CGColorSpaceCreateDeviceRGB()
@@ -89,16 +83,16 @@ class MandelbrotDrawing {
         let index = y * width + x
         var pixel = pixels[index]
         
-        let calcX = self.Ox + Float80(x) / Float80(self.rect.width) * self.Lx
-        let calcY = self.Oy + Float80(y) / Float80(self.rect.height) * self.Ly
+        let calculateX = -2 + Float80(x) / Float80(self.rect.width) * 4
+        let calculateY = -2 + Float80(y) / Float80(self.rect.height) * 4
         
-        let iterations = Mandelbrot.calculate(
-            x: calcX,
-            y: calcY,
-            i: self.maxIterations
+        let iteration = Mandelbrot.calculatePixelColor(
+          pixelX: calculateX,
+          pixelY: calculateY,
+          maxIteration: self.maxIterations
         )
         
-        let color = self.randomColorList[iterations]!
+        let color = self.randomColorList[iteration]!
         var red: CGFloat = 0
         var green: CGFloat = 0
         var blue: CGFloat = 0
